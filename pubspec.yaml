@@ -17,9 +17,22 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  gradient_widgets: ^0.4.1
+  google_sign_in: ^4.0.0
+  cloud_firestore: ^0.11.0
+  firebase_auth: ^0.10.0
   flutter:
     sdk: flutter
-
+  firebase_core: ^0.4.0  # add dependency for Firebase Core
+  firebase_analytics: ^3.0.0  # add dependency for Google Analytics for Firebase
+  flutter_bloc : ^0.7.0
+  intl: ^0.15.8
+  flutter_signin_button: ^0.2.8
+  google_maps_flutter: ^0.2.0
+  location: ^2.3.5
+  flutter_google_places: ^0.1.4
+  geolocator: ^3.0.0
+  numberpicker: ^1.0.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
