@@ -41,6 +41,7 @@ class _LoginPageState extends State<LoginPage> {
                 stream: authService.user,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    Navigator.pop(context);
                     return MaterialButton(
                       onPressed: () => authService.signOut(),
                       color: Colors.red,

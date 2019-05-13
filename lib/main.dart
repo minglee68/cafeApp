@@ -57,6 +57,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cafe App'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.exit_to_app,
+              semanticLabel: 'exit',
+            ),
+            onPressed: () {
+              authService.signOut();
+              Navigator.pushNamed(context, '/login');
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Text('Cafe App'),
