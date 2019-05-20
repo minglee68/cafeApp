@@ -18,6 +18,7 @@ import 'profile.dart';
 import 'auth.dart';
 import 'add.dart';
 import 'detail.dart';
+import 'map.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:firebase_storage/firebase_storage.dart';
@@ -35,6 +36,7 @@ class HomePage extends StatelessWidget {
         routes: {
           '/profile': (context) => ProfilePage(),
           '/add': (context) => AddPage(),
+          '/map': (context) => MapPage(),
         }
     );
   }
@@ -205,8 +207,36 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.pushNamed(context, '/profile');
             },
           ),
+          IconButton(
+            icon: Icon(
+              Icons.map,
+              semanticLabel: 'map'
+            ),
+            onPressed: (){
+              Navigator.pushNamed(context,'/map');
+            }
+          )
         ],
       ),
+
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0, // this will be set when a new tab is tapped
+        items: [
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.home),
+            title: new Text('Home'),
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.map),
+            title: new Text('Map'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            title: Text('Profile'),
+          )
+        ],
+      ),
+
       body: StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance.collection('cafe').snapshots(),
         builder: (context, snapshot) {
