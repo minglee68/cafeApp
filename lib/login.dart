@@ -14,6 +14,9 @@
 
 import 'package:flutter/material.dart';
 import 'auth.dart';
+import 'profile.dart';
+import 'add.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -41,12 +44,30 @@ class _LoginPageState extends State<LoginPage> {
                 stream: authService.user,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    Navigator.pop(context);
-                    return MaterialButton(
-                      onPressed: () => authService.signOut(),
-                      color: Colors.red,
-                      textColor: Colors.white,
-                      child: Text('Signout'),
+                    return StreamBuilder<DocumentSnapshot>(
+                      stream: Firestore.instance.collection('user').document(snapshot.data.uid.toString()).snapshots(),
+                      builder: (context, document) {
+                        if (document.hasData) {
+                          print(document.data.data['name']);
+                          print("11111111111111111111111111111111111111111111111");
+                          Navigator.pop(context);
+                          return MaterialButton(
+                            onPressed: () => authService.signOut(),
+                            color: Colors.red,
+                            textColor: Colors.white,
+                            child: Text('Signout'),
+                          );
+                        } else {
+                          //Navigator.push(context, MaterialPageRoute(builder: (context) => AddPage()));
+                          Navigator.pop(context);
+                          return MaterialButton(
+                            onPressed: () => authService.signOut(),
+                            color: Colors.red,
+                            textColor: Colors.white,
+                            child: Text('Signout'),
+                          );
+                        }
+                      }
                     );
                   } else {
                     return MaterialButton(
@@ -70,3 +91,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
