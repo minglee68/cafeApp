@@ -37,6 +37,7 @@ class HomePage extends StatelessWidget {
           '/profile': (context) => ProfilePage(),
           '/add': (context) => AddPage(),
           '/map': (context) => MapPage(),
+          '/home' : (context) => MyHomePage(),
         }
     );
   }
@@ -187,36 +188,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cafe App'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.exit_to_app,
-              semanticLabel: 'exit',
-            ),
-            onPressed: () {
-              authService.signOut();
-              Navigator.pushNamed(context, '/login');
-            },
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.person,
-              semanticLabel: 'profile',
-            ),
-            onPressed: () {
-              Navigator.pushNamed(context, '/profile');
-            },
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.map,
-              semanticLabel: 'map'
-            ),
-            onPressed: (){
-              Navigator.pushNamed(context,'/map');
-            }
-          )
-        ],
       ),
 
       bottomNavigationBar: BottomNavigationBar(
@@ -231,10 +202,36 @@ class _MyHomePageState extends State<MyHomePage> {
             title: new Text('Map'),
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            title: Text('Search'),
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             title: Text('Profile'),
-          )
+          ),
         ],
+        onTap: (int currentIndex){
+          if (currentIndex == 0){
+            print("0");
+            Navigator.pushNamed(context, '/home');
+            print("0!");
+          }
+          else if (currentIndex == 1){
+            print("1");
+            Navigator.pushNamed(context, '/map');
+            return MapPage();
+            print("1!");
+          }
+          else if (currentIndex == 2){
+            print("current Index == 2");
+
+          }
+          else{
+            print("3");
+            Navigator.pushNamed(context, '/profile');
+            print("3!");
+          }
+        },
       ),
 
       body: StreamBuilder<QuerySnapshot>(
