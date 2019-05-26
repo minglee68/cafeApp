@@ -15,6 +15,7 @@
 import 'package:flutter/material.dart';
 import 'auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'add.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -23,6 +24,50 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  int _cIndex = 3;
+
+  void _incrementTab(index) {
+    setState(() {
+      _cIndex = index;
+      print(_cIndex);
+
+      if (_cIndex == 0) {
+        Navigator.pushNamed(context, '/');
+      } else if (_cIndex == 1) {
+        Navigator.pushNamed(context, '/map');
+      } else if (_cIndex == 2) {
+        //Navigator.pushNamed(context, '/home');
+      } else if (_cIndex == 3) {
+        //Navigator.pushNamed(context, '/profile');
+      }
+
+      _cIndex = 3;
+    });
+  }
+
+  bool _checkUserExist(BuildContext context, List<DocumentSnapshot> snapshot, String uid) {
+    List user_list = snapshot.map((data) {return data.documentID;}).toList();
+    bool flag = false;
+
+    user_list.forEach((element) {
+      if (element.toString().compareTo(uid) == 0) {
+        flag = true;
+      }
+    });
+    return flag;
+  }
+
+  DocumentSnapshot _getUserExist(BuildContext context, List<DocumentSnapshot> snapshot, String uid) {
+    List user_list = snapshot.map((data) {return data;}).toList();
+    DocumentSnapshot user;
+
+    user_list.forEach((element) {
+      if (element.documentID.compareTo(uid) == 0) {
+        user = element;
+      }
+    });
+    return user;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,18 +88,20 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(color: Colors.black),
-        child: Center(
-          child: StreamBuilder(
-              stream: authService.user,
-              builder: (context, user) {
-                if (user.hasData) {
-                  return StreamBuilder<DocumentSnapshot>(
-                    stream: Firestore.instance.collection('user').document(user.data.uid).snapshots(),
-                    builder: (context, userData) {
-                      final record = UserRecord.fromSnapshot(userData.data);
-                      return Column(
+      body: StreamBuilder(
+        stream: authService.user,
+        builder: (context, user) {
+          if (user.hasData) {
+            return StreamBuilder<QuerySnapshot>(
+              stream: Firestore.instance.collection('user').snapshots(),
+              builder: (context, userData) {
+                //final record = UserRecord.fromSnapshot(userData.data);
+                if (_checkUserExist(context, userData.data.documents, user.data.uid)) {
+                  DocumentSnapshot temp = _getUserExist(context, userData.data.documents, user.data.uid);
+                  final record = UserRecord.fromSnapshot(temp);
+                  return SingleChildScrollView(
+                    child: Center(
+                      child: Column(
                         children: <Widget>[
                           Image.network(
                             record.image,
@@ -68,7 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
-                              color: Colors.white,
+                              //color: Colors.white,
                             ),
                           ),
                           Text(
@@ -76,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
-                              color: Colors.white,
+                              //color: Colors.white,
                             ),
                           ),
                           SizedBox(height: 20),
@@ -86,47 +133,110 @@ class _ProfilePageState extends State<ProfilePage> {
                             user.data.email,
                             style: TextStyle(
                               fontSize: 16,
+                              //color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          FlatButton(
+                            child: Text(
+                              'Add Cafe',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => AddCafePage(uid: user.data.uid)));
+                            },
+                            color: Colors.blue,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else {
+                  return Center(
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          "댓글을 달거나 카페를 추가하기 위해선 사용자 등록을 해주세요",
+                        ),
+                        FlatButton(
+                          child: Text(
+                            "Add User",
+                            style: TextStyle(
+                              fontSize: 20.0,
                               color: Colors.white,
                             ),
                           ),
-                        ],
-                      );
-                    }
-                  );
-                } else {
-                  return Column(
-                    children: <Widget>[
-                      Image.network(
-                        'https://firebasestorage.googleapis.com/v0/b/my-app-b8a9c.appspot.com/o/noimage.jpg?alt=media&token=3f8568d1-9f1c-40cb-b541-ffcfd1652979',
-                        width: 300,
-                        height: 300,
-                        fit: BoxFit.contain,
-                      ),
-                      SizedBox(height: 60),
-                      Text(
-                        'anonymous uid',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Divider(height: 1.0, color: Colors.white),
-                      SizedBox(height: 20),
-                      Text(
-                        'anonymous',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
+                          color: Colors.blue,
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserPage(uid: user.data.uid)));
+                          },
+                        )
+                      ],
+                    ),
                   );
                 }
               }
+            );
+          } else {
+            return Column(
+              children: <Widget>[
+                Image.network(
+                  'https://firebasestorage.googleapis.com/v0/b/my-app-b8a9c.appspot.com/o/noimage.jpg?alt=media&token=3f8568d1-9f1c-40cb-b541-ffcfd1652979',
+                  width: 300,
+                  height: 300,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(height: 60),
+                Text(
+                  'anonymous uid',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    //color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 20),
+                Divider(height: 1.0, color: Colors.white),
+                SizedBox(height: 20),
+                Text(
+                  'anonymous',
+                  style: TextStyle(
+                    fontSize: 16,
+                    //color: Colors.white,
+                  ),
+                ),
+              ],
+            );
+          }
+        }
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _cIndex,
+        type: BottomNavigationBarType.fixed,// this will be set when a new tab is tapped
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home, color: Color.fromARGB(255, 0, 0, 0)),
+            title: Text('Home'),
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map, color: Color.fromARGB(255, 0, 0, 0)),
+            title: Text('Map'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0)),
+            title: Text('Search'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person, color: Color.fromARGB(255, 0, 0, 0)),
+            title: Text('Profile'),
+          ),
+        ],
+        onTap: (index) {
+          _incrementTab(index);
+        },
       ),
     );
   }

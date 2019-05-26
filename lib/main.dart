@@ -21,7 +21,6 @@ import 'detail.dart';
 import 'map.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:firebase_storage/firebase_storage.dart';
 
 void main() => runApp(HomePage());
 
@@ -35,9 +34,8 @@ class HomePage extends StatelessWidget {
         onGenerateRoute: _getRoute,
         routes: {
           '/profile': (context) => ProfilePage(),
-          '/add': (context) => AddPage(),
           '/map': (context) => MapPage(),
-          '/home' : (context) => MyHomePage(),
+          //'/home' : (context) => MyHomePage(),
         }
     );
   }
@@ -63,6 +61,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _cIndex = 0;
+
+  void _incrementTab(index) {
+    setState(() {
+      _cIndex = index;
+      print(_cIndex);
+      
+      if (_cIndex == 0) {
+        //Navigator.pushNamed(context, '/');
+      } else if (_cIndex == 1) {
+        Navigator.pushNamed(context, '/map');
+      } else if (_cIndex == 2) {
+        //Navigator.pushNamed(context, '/home');
+      } else if (_cIndex == 3) {
+        Navigator.pushNamed(context, '/profile');
+      }
+      _cIndex = 0;
+    });
+  }
 
   List<Widget> _buildGridCards(BuildContext context, List<DocumentSnapshot> snapshot) {
     List<Widget> temp = [];
@@ -191,25 +208,30 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0, // this will be set when a new tab is tapped
+        currentIndex: _cIndex,
+        type: BottomNavigationBarType.fixed,// this will be set when a new tab is tapped
         items: [
           BottomNavigationBarItem(
-            icon: new Icon(Icons.home),
-            title: new Text('Home'),
+            icon: Icon(Icons.home, color: Color.fromARGB(255, 0, 0, 0)),
+            title: Text('Home'),
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.map),
-            title: new Text('Map'),
+            icon: Icon(Icons.map, color: Color.fromARGB(255, 0, 0, 0)),
+            title: Text('Map'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0)),
             title: Text('Search'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person, color: Color.fromARGB(255, 0, 0, 0)),
             title: Text('Profile'),
           ),
         ],
+        onTap: (index) {
+          _incrementTab(index);
+        },
+        /*
         onTap: (int currentIndex){
           if (currentIndex == 0){
             print("0");
@@ -232,6 +254,7 @@ class _MyHomePageState extends State<MyHomePage> {
             print("3!");
           }
         },
+        */
       ),
 
       body: StreamBuilder<QuerySnapshot>(
