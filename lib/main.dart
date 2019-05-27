@@ -256,15 +256,6 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         */
       ),
-
-      floatingActionButton: FloatingActionButton(
-        child:Icon(Icons.add),
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddCafePage()));
-        }
-      ),
-
       body: StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance.collection('cafe').snapshots(),
         builder: (context, snapshot) {
