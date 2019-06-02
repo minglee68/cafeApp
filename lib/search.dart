@@ -27,6 +27,42 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
 
   String _name = "";
+  bool _cafeName = false;
+  bool _beanName = false;
+  var _checkFlag = [false, false, false, false, false, false, false];
+
+  String getBeanName(int num) {
+    String name;
+    if (num == 0) {
+      name = "인도네시아 만델링";
+    } else if (num == 1) {
+      name = "콜롬비아 슈프리모";
+    } else if (num == 2) {
+      name = "브라질 산토스";
+    } else if (num == 3) {
+      name = "과테말라 안티구아";
+    } else if (num == 4) {
+      name = "에디오피아 예가체프";
+    } else if (num == 5) {
+      name = "케냐 AA";
+    } else if (num == 6) {
+      name = "에디오피아 시다모";
+    }
+
+    return name;
+  }
+
+  List<dynamic> getBeans() {
+    List<dynamic> temp = [];
+    int count = 0;
+    _checkFlag.forEach((element) {
+      if (element) {
+        temp.add(getBeanName(count));
+        count = count + 1;
+      }
+    });
+    return temp;
+  }
 
   Future<void> _showSearchCafe(BuildContext context) async {
     final _nameController = TextEditingController();
@@ -54,7 +90,8 @@ class _SearchPageState extends State<SearchPage> {
               child: Text('검색'),
               onPressed: () {
                 _name = _nameController.text;
-                print(_name);
+                _cafeName = true;
+                _beanName = false;
                 Navigator.of(context).pop();
               },
             ),
@@ -71,22 +108,63 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _showSearchBean(BuildContext context) async {
-    final _nameController = TextEditingController();
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('카페 이름으로 검색하세요'),
+          title: Text('원두 이름으로 검색하세요'),
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                TextField(
-                  decoration: InputDecoration(
-                    filled: true,
-                    labelText: '카페 이름으로 검색',
-                  ),
-                  controller: _nameController,
+                CheckboxListTile(
+                  title: const Text('인도네시아 만델링'),
+                  value: _checkFlag[0],
+                  onChanged: (bool value) {
+                    setState(() { _checkFlag[0] = value; });
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text('콜롬비아 슈프리모'),
+                  value: _checkFlag[1],
+                  onChanged: (bool value) {
+                    setState(() { _checkFlag[1] = value; });
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text('브라질 산토스'),
+                  value: _checkFlag[2],
+                  onChanged: (bool value) {
+                    setState(() { _checkFlag[2] = value; });
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text('과테말라 안티구아'),
+                  value: _checkFlag[3],
+                  onChanged: (bool value) {
+                    setState(() { _checkFlag[3] = value; });
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text('에디오피아 예가체프'),
+                  value: _checkFlag[4],
+                  onChanged: (bool value) {
+                    setState(() { _checkFlag[4] = value; });
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text('케냐 AA'),
+                  value: _checkFlag[5],
+                  onChanged: (bool value) {
+                    setState(() { _checkFlag[5] = value; });
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text('에디오피아 시다모'),
+                  value: _checkFlag[6],
+                  onChanged: (bool value) {
+                    setState(() { _checkFlag[6] = value; });
+                  },
                 ),
               ],
             ),
@@ -95,14 +173,15 @@ class _SearchPageState extends State<SearchPage> {
             FlatButton(
               child: Text('검색'),
               onPressed: () {
-                _name = _nameController.text;
-                print(_name);
+                _cafeName = false;
+                _beanName = true;
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
               child: Text('돌아가기'),
               onPressed: () {
+                _checkFlag = [false, false, false, false, false, false, false];
                 Navigator.of(context).pop();
               },
             ),
@@ -124,7 +203,25 @@ class _SearchPageState extends State<SearchPage> {
   List<Widget> _buildGridCards(BuildContext context, List<DocumentSnapshot> snapshot) {
     List<Widget> temp = [];
     snapshot.map((data) {
-      temp.add(_buildListItem(context, data));
+      final record = Record.fromSnapshot(data);
+      if (_cafeName) {
+        if (record.name.contains(_name)) {
+          temp.add(_buildListItem(context, data));
+        }
+      } else  if (_beanName) {
+        List<dynamic> beans = getBeans();
+        beans.forEach((element) {
+          bool flag = false;
+          if (record.beans.contains(element)) {
+            flag = true;
+          }
+          if (flag) {
+            temp.add(_buildListItem(context, data));
+          }
+        });
+      } else {
+        temp.add(_buildListItem(context, data));
+      }
     }).toList();
 
     return temp;
