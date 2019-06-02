@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'add.dart';
+import 'main.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -25,6 +26,50 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   int _cIndex = 3;
+
+  List<Widget> _buildList(BuildContext context, List<DocumentSnapshot> snapshot, List<dynamic> likedCafe, String user) {
+
+    List<Widget> temp = [];
+
+    snapshot.map((data) {
+      final record = Record.fromSnapshot(data);
+
+      if (likedCafe.contains(data.documentID)) {
+        temp.add(ListTile(
+            title: Text(record.name),
+            trailing: FlatButton(
+              onPressed: () {
+                List<dynamic> likedList = [];
+                likedCafe.forEach((element) {
+                  if (element != data.documentID)
+                    likedList.add(element);
+                });
+
+                Firestore.instance.collection('user').document(user).updateData({
+                  "likedCafe": likedList,
+                }).then((result) => {}).catchError((err) => print(err));
+
+                likedList = [];
+                record.likedUsers.forEach((element) {
+                  if (element != user)
+                    likedList.add(element);
+                });
+
+                Firestore.instance.collection('cafe').document(data.documentID).updateData({
+                  "likedUsers": likedList,
+                }).then((result) => {}).catchError((err) => print(err));
+              },
+              child: Icon(Icons.favorite, color: Colors.red),
+            ),
+          ));
+        temp.add(SizedBox(height: 20));
+        temp.add(Divider(height: 1.0, color: Colors.black));
+        temp.add(SizedBox(height: 20));
+      }
+    }).toList();
+
+    return temp;
+  }
 
   void _incrementTab(index) {
     setState(() {
@@ -99,60 +144,78 @@ class _ProfilePageState extends State<ProfilePage> {
                 if (_checkUserExist(context, userData.data.documents, user.data.uid)) {
                   DocumentSnapshot temp = _getUserExist(context, userData.data.documents, user.data.uid);
                   final record = UserRecord.fromSnapshot(temp);
-                  return SingleChildScrollView(
-                    child: Center(
-                      child: Column(
-                        children: <Widget>[
-                          Image.network(
-                            record.image,
-                            width: 300,
-                            height: 300,
-                            fit: BoxFit.contain,
-                          ),
-                          SizedBox(height: 60),
-                          Text(
-                            record.nickname,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              //color: Colors.white,
+                  return StreamBuilder<QuerySnapshot>(
+                    stream: Firestore.instance.collection('cafe').snapshots(),
+                    builder: (context, cafeSnapshots) {
+                      if (!cafeSnapshots.hasData) return LinearProgressIndicator();
+                      return Container(
+                        child: CustomScrollView(
+                          slivers: <Widget>[
+                            SliverList(
+                              delegate: SliverChildListDelegate([
+                                Column(
+                                  children: <Widget>[
+                                    Image.network(
+                                      record.image,
+                                      width: 300,
+                                      height: 300,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    SizedBox(height: 60),
+                                    Text(
+                                      record.nickname,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        //color: Colors.white,
+                                      ),
+                                    ),
+                                    Text(
+                                      record.name,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        //color: Colors.white,
+                                      ),
+                                    ),
+                                    SizedBox(height: 20),
+                                    Divider(height: 1.0, color: Colors.white),
+                                    SizedBox(height: 20),
+                                    Text(
+                                      user.data.email,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        //color: Colors.white,
+                                      ),
+                                    ),
+                                    SizedBox(height: 20),
+                                    FlatButton(
+                                      child: Text(
+                                        'Add Cafe',
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddCafePage(uid: user.data.uid)));
+                                      },
+                                      color: Colors.blue,
+                                    ),
+                                    SizedBox(height: 20),
+                                    Divider(height: 1.0, color: Colors.black),
+                                    SizedBox(height: 20),
+                                  ],
+                                ),
+                              ]),
                             ),
-                          ),
-                          Text(
-                            record.name,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              //color: Colors.white,
+                            SliverList(
+                              delegate: SliverChildListDelegate(_buildList(context, cafeSnapshots.data.documents, record.likedCafe, user.data.uid)),
                             ),
-                          ),
-                          SizedBox(height: 20),
-                          Divider(height: 1.0, color: Colors.white),
-                          SizedBox(height: 20),
-                          Text(
-                            user.data.email,
-                            style: TextStyle(
-                              fontSize: 16,
-                              //color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          FlatButton(
-                            child: Text(
-                              'Add Cafe',
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.white,
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => AddCafePage(uid: user.data.uid)));
-                            },
-                            color: Colors.blue,
-                          ),
-                        ],
-                      ),
-                    ),
+                          ],
+                        ),
+                      );
+                    }
                   );
                 } else {
                   return Center(
@@ -247,6 +310,7 @@ class UserRecord {
   final String nickname;
   final String gender;
   final String image;
+  final List<dynamic> likedCafe;
   final DocumentReference reference;
 
   UserRecord.fromMap(Map<String, dynamic> map, {this.reference})
@@ -254,15 +318,17 @@ class UserRecord {
         assert(map['nickname'] != null),
         assert(map['gender'] != null),
         assert(map['image'] != null),
+        assert(map['likedCafe'] != null),
         name = map['name'],
         nickname = map['nickname'],
         gender = map['gender'],
-        image = map['image'];
+        image = map['image'],
+        likedCafe = map['likedCafe'];
 
   UserRecord.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
 
 
   @override
-  String toString() => "UserRecord<$name:$nickname:$gender:$image>";
+  String toString() => "UserRecord<$name:$nickname:$gender:$image:$likedCafe>";
 }

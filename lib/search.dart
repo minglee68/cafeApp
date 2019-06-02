@@ -13,74 +13,112 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'login.dart';
-import 'profile.dart';
 import 'auth.dart';
-import 'add.dart';
-import 'detail.dart';
-import 'map.dart';
-import 'search.dart';
-import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'main.dart';
+import 'detail.dart';
 
-void main() => runApp(HomePage());
 
-class HomePage extends StatelessWidget {
+class SearchPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'home',
-        home: MyHomePage(),
-        initialRoute: '/login',
-        onGenerateRoute: _getRoute,
-        routes: {
-          '/profile': (context) => ProfilePage(),
-          '/map': (context) => MapPage(),
-          '/search': (context) => SearchPage(),
-          //'/home' : (context) => MyHomePage(),
-        }
+  _SearchPageState createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+
+  String _name = "";
+
+  Future<void> _showSearchCafe(BuildContext context) async {
+    final _nameController = TextEditingController();
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('카페 이름으로 검색하세요'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(
+                    filled: true,
+                    labelText: '카페 이름으로 검색',
+                  ),
+                  controller: _nameController,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('검색'),
+              onPressed: () {
+                _name = _nameController.text;
+                print(_name);
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('돌아가기'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Route<dynamic> _getRoute(RouteSettings settings) {
-    if (settings.name != '/login') {
-      return null;
-    }
-
-    return MaterialPageRoute<void>(
-      settings: settings,
-      builder: (BuildContext context) => LoginPage(),
-      fullscreenDialog: true,
+  Future<void> _showSearchBean(BuildContext context) async {
+    final _nameController = TextEditingController();
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('카페 이름으로 검색하세요'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(
+                    filled: true,
+                    labelText: '카페 이름으로 검색',
+                  ),
+                  controller: _nameController,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('검색'),
+              onPressed: () {
+                _name = _nameController.text;
+                print(_name);
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('돌아가기'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() {
-    return _MyHomePageState();
-  }
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _cIndex = 0;
-
-  void _incrementTab(index) {
-    setState(() {
-      _cIndex = index;
-      print(_cIndex);
-      
-      if (_cIndex == 0) {
-        //Navigator.pushNamed(context, '/');
-      } else if (_cIndex == 1) {
-        Navigator.pushNamed(context, '/map');
-      } else if (_cIndex == 2) {
-        Navigator.pushNamed(context, '/search');
-      } else if (_cIndex == 3) {
-        Navigator.pushNamed(context, '/profile');
-      }
-      _cIndex = 0;
-    });
+  List<Widget> _buildButtons(BuildContext context) {
+    return [Row(
+      children: <Widget>[
+        Expanded(child: FlatButton(child: Text('카페 이름으로 찾기'), onPressed: () {_showSearchCafe(context);},)),
+        Expanded(child: FlatButton(child: Text('원두 종류로 찾기'), onPressed: () {_showSearchBean(context);},)),
+      ],
+    )];
   }
 
   List<Widget> _buildGridCards(BuildContext context, List<DocumentSnapshot> snapshot) {
@@ -94,8 +132,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Card _buildListItem(BuildContext context, DocumentSnapshot data) {
     final record = Record.fromSnapshot(data);
-    final NumberFormat formatter = NumberFormat.simpleCurrency(
-        locale: Localizations.localeOf(context).toString());
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -206,112 +242,42 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cafe App'),
+        title: Text('Search'),
       ),
-
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _cIndex,
-        type: BottomNavigationBarType.fixed,// this will be set when a new tab is tapped
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Color.fromARGB(255, 0, 0, 0)),
-            title: Text('Home'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map, color: Color.fromARGB(255, 0, 0, 0)),
-            title: Text('Map'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0)),
-            title: Text('Search'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: Color.fromARGB(255, 0, 0, 0)),
-            title: Text('Profile'),
-          ),
-        ],
-        onTap: (index) {
-          _incrementTab(index);
-        },
-        /*
-        onTap: (int currentIndex){
-          if (currentIndex == 0){
-            print("0");
-            Navigator.pushNamed(context, '/home');
-            print("0!");
-          }
-          else if (currentIndex == 1){
-            print("1");
-            Navigator.pushNamed(context, '/map');
-            return MapPage();
-            print("1!");
-          }
-          else if (currentIndex == 2){
-            print("current Index == 2");
-
-          }
-          else{
-            print("3");
-            Navigator.pushNamed(context, '/profile');
-            print("3!");
-          }
-        },
-        */
-      ),
-
       body: StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance.collection('cafe').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return LinearProgressIndicator();
           return Center(
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverPadding(
+                  padding: EdgeInsets.all(1.0),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate(_buildButtons(context)),
+                  ),
+                ),
+                SliverPadding(
+                  padding: EdgeInsets.all(16.0),
+                  sliver: SliverGrid.count(
+                    crossAxisCount: 1,
+                    childAspectRatio: 7.5 / 9.0,
+                    children: _buildGridCards(context, snapshot.data.documents),
+                  ),
+                ),
+              ],
+            ),
+            /*
             child: GridView.count(
               crossAxisCount: 1,
               padding: EdgeInsets.all(16.0),
               childAspectRatio: 7.5 / 9.0,
               children: _buildGridCards(context, snapshot.data.documents),
             ),
+            */
           );
         }
       ),
     );
   }
-}
-
-class Record {
-  final String name;
-  final String image;
-  final String description;
-  final String location;
-  final String open;
-  final String close;
-  final String phone;
-  final List<dynamic> likedUsers;
-  final List<dynamic> beans;
-  final DocumentReference reference;
-
-  Record.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['name'] != null),
-        assert(map['image'] != null),
-        assert(map['description'] != null),
-        assert(map['location'] != null),
-        assert(map['open'] != null),
-        assert(map['close'] != null),
-        assert(map['phone'] != null),
-        assert(map['likedUsers'] != null),
-        assert(map['beans'] != null),
-        name = map['name'],
-        image = map['image'],
-        description = map['description'],
-        location = map['location'],
-        open = map['open'],
-        close = map['close'],
-        phone = map['phone'],
-        likedUsers = map['likedUsers'],
-        beans = map['beans'];
-
-  Record.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
-
-  @override
-  String toString() => "Record<$name:$image:$location:$phone:$open:$close:$description:$likedUsers:$beans>";
 }
