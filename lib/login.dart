@@ -17,6 +17,7 @@ import 'auth.dart';
 import 'profile.dart';
 import 'add.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -64,7 +65,12 @@ class _LoginPageState extends State<LoginPage> {
             RaisedButton(
               child: Text('Guest'),
               onPressed: () {
-                Navigator.pop(context);
+                FirebaseAuth.instance
+                    .signInAnonymously()
+                    .then((FirebaseUser user){
+                }).catchError((e) {
+                  print(e);
+                });
               },
             ),
           ],
