@@ -256,6 +256,7 @@ class Record {
   final String open;
   final String close;
   final String phone;
+  final String owner;
   final List<dynamic> likedUsers;
   final List<dynamic> beans;
   final DocumentReference reference;
@@ -270,6 +271,7 @@ class Record {
         assert(map['phone'] != null),
         assert(map['likedUsers'] != null),
         assert(map['beans'] != null),
+        assert(map['owner'] != null),
         name = map['name'],
         image = map['image'],
         description = map['description'],
@@ -278,11 +280,12 @@ class Record {
         close = map['close'],
         phone = map['phone'],
         likedUsers = map['likedUsers'],
-        beans = map['beans'];
+        beans = map['beans'],
+        owner = map['owner'];
 
   Record.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
 
   @override
-  String toString() => "Record<$name:$image:$location:$phone:$open:$close:$description:$likedUsers:$beans>";
+  String toString() => "Record<$name:$image:$location:$phone:$open:$close:$description:$likedUsers:$beans:$owner>";
 }
