@@ -656,11 +656,11 @@ class _AddCafePageState extends State<AddCafePage> {
                 ],
               ),
               SizedBox(height: 20.0),
-              Divider(height: 1.0, color: Colors.black),
+              Divider(height: 1.0, color: Colors.white),
               SizedBox(height: 20.0),
               Text("원두 종류"),
               SizedBox(height: 20.0),
-              Divider(height: 1.0, color: Colors.black),
+              Divider(height: 1.0, color: Colors.white),
               CheckboxListTile(
                 title: const Text('인도네시아 만델링'),
                 value: _checkFlag[0],

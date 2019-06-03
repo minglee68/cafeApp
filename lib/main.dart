@@ -29,21 +29,27 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'home',
-        home: MyHomePage(),
-        initialRoute: '/login',
-        onGenerateRoute: _getRoute,
-        routes: {
-          '/profile': (context) => ProfilePage(),
-          '/map': (context) => MapPage(),
-          '/search': (context) => SearchPage(),
-          //'/home' : (context) => MyHomePage(),
-        },
-        theme: ThemeData(
-          brightness: Brightness.dark,
-          primaryColor: Colors.brown,
-          accentColor: Colors.black,
+      title: 'home',
+      home: MyHomePage(),
+      initialRoute: '/login',
+      onGenerateRoute: _getRoute,
+      routes: {
+        '/profile': (context) => ProfilePage(),
+        '/map': (context) => MapPage(),
+        '/search': (context) => SearchPage(),
+        //'/home' : (context) => MyHomePage(),
+      },
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.brown,
+        accentColor: Colors.white,
+        textTheme: TextTheme(
+          headline: TextStyle(color: Colors.white),
+          title: TextStyle(color: Colors.white),
+          body1: TextStyle(color: Colors.white),
         ),
+      ),
+
     );
   }
 
@@ -76,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print(_cIndex);
       
       if (_cIndex == 0) {
-        Navigator.pushNamed(context, '/');
+        //Navigator.pushNamed(context, '/');
       } else if (_cIndex == 1) {
         Navigator.pushNamed(context, '/map');
       } else if (_cIndex == 2) {
@@ -214,54 +220,41 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text('Cafe App'),
       ),
 
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _cIndex,
-        type: BottomNavigationBarType.fixed,// this will be set when a new tab is tapped
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Color.fromARGB(255, 0, 0, 0)),
-            title: Text('Home'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map, color: Color.fromARGB(255, 0, 0, 0)),
-            title: Text('Map'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0)),
-            title: Text('Search'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: Color.fromARGB(255, 0, 0, 0)),
-            title: Text('Profile'),
-          ),
-        ],
-        onTap: (index) {
-          _incrementTab(context, index);
-        },
-        /*
-        onTap: (int currentIndex){
-          if (currentIndex == 0){
-            print("0");
-            Navigator.pushNamed(context, '/home');
-            print("0!");
-          }
-          else if (currentIndex == 1){
-            print("1");
-            Navigator.pushNamed(context, '/map');
-            return MapPage();
-            print("1!");
-          }
-          else if (currentIndex == 2){
-            print("current Index == 2");
-
-          }
-          else{
-            print("3");
-            Navigator.pushNamed(context, '/profile');
-            print("3!");
-          }
-        },
-        */
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          // sets the background color of the `BottomNavigationBar`
+            canvasColor: Colors.brown,
+            // sets the active color of the `BottomNavigationBar` if `Brightness` is light
+            primaryColor: Colors.brown,
+            textTheme: Theme
+                .of(context)
+                .textTheme
+                .copyWith(caption: new TextStyle(color: Colors.white))),
+        child: BottomNavigationBar(
+          currentIndex: _cIndex,
+          type: BottomNavigationBarType.fixed,// this will be set when a new tab is tapped
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home, color: Color.fromARGB(255, 0, 0, 0)),
+              title: Text('Home'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map, color: Color.fromARGB(255, 0, 0, 0)),
+              title: Text('Map'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0)),
+              title: Text('Search'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person, color: Color.fromARGB(255, 0, 0, 0)),
+              title: Text('Profile'),
+            ),
+          ],
+          onTap: (index) {
+            _incrementTab(context, index);
+          },
+        ),
       ),
 
       body: StreamBuilder<QuerySnapshot>(

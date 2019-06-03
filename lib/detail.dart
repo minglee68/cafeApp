@@ -95,6 +95,7 @@ class _DetailPageState extends State<DetailPage> {
                 return StreamBuilder<QuerySnapshot>(
                   stream: Firestore.instance.collection('user').snapshots(),
                   builder: (context, userData) {
+                    if (!userData.hasData) return LinearProgressIndicator();
                     bool flag = _checkUserExist(context, userData.data.documents, snapshot.data.uid);
                     UserRecord userRecord;
                     if (flag) {

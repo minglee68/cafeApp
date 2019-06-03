@@ -72,23 +72,23 @@ class _BeanDetailPageState extends State<BeanDetailPage> {
               child: Column(
                 children: <Widget>[
                   Text('향(Aroma)', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Divider(height: 1.0, color: Colors.black),
+                  Divider(height: 1.0, color: Colors.white),
                   Text('커피 추출시 발산되는 가스, 커피의 향기를 의미합니다'),
                   SizedBox(height: 40),
                   Text('산도(Acidity)', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Divider(height: 1.0, color: Colors.black),
+                  Divider(height: 1.0, color: Colors.white),
                   Text('커피의 산뜻함과 풍미를 결정지으며, 신맛의 정도입니다'),
                   SizedBox(height: 40),
                   Text('단맛(Sweetness)', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Divider(height: 1.0, color: Colors.black),
+                  Divider(height: 1.0, color: Colors.white),
                   Text('원두의 달달한 맛을 의미합니다'),
                   SizedBox(height: 40),
                   Text('쓴맛(Bitterness)', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Divider(height: 1.0, color: Colors.black),
+                  Divider(height: 1.0, color: Colors.white),
                   Text('원두의 약간 쓰거나 불맛나는 향을 의미합니다'),
                   SizedBox(height: 40),
                   Text('바디(Body)', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Divider(height: 1.0, color: Colors.black),
+                  Divider(height: 1.0, color: Colors.white),
                   Text('커피를 입에 머금었을 때 느껴지는 밀도와 무게감을 뜻합니다'),
                 ],
               ),
@@ -129,8 +129,13 @@ class _BeanDetailPageState extends State<BeanDetailPage> {
                     Container(
                       child: Column(
                         children: <Widget>[
-                          Text(record.name),
+                          SizedBox(height: 40),
+                          Text(record.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                          SizedBox(height: 40),
+                          Divider(height: 1.0, color: Colors.white),
+                          SizedBox(height: 20),
                           Text(record.description),
+                          SizedBox(height: 20),
                           Padding(
                               padding: EdgeInsets.all(32.0),
                               child: SizedBox(
