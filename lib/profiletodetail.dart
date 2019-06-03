@@ -101,6 +101,34 @@ class _DetailPageState extends State<DetailPage> {
               key: _scaffoldKey,
               appBar: AppBar(
                 title: Text(record.name),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.create,
+                      semanticLabel: 'edit',
+                    ),
+                    onPressed: () {
+                      if (widget.user == record.owner) {
+                        print("you are owner");
+                        //Navigator.push(context, MaterialPageRoute(builder: (context) => EditPage(record: record)));
+                      } else {
+                        print("you are not owner");
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      semanticLabel: 'delete',
+                    ),
+                    onPressed: () {
+                      if (widget.user == record.owner) {
+                        Firestore.instance.collection('cafe').document(widget.data.documentID).delete().catchError((err) => print(err));
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ],
               ),
               body: Center(
                 child: ListView(
