@@ -244,34 +244,27 @@ class _ProfilePageState extends State<ProfilePage> {
               }
             );
           } else {
-            return Column(
-              children: <Widget>[
-                Image.network(
-                  'https://firebasestorage.googleapis.com/v0/b/my-app-b8a9c.appspot.com/o/noimage.jpg?alt=media&token=3f8568d1-9f1c-40cb-b541-ffcfd1652979',
-                  width: 300,
-                  height: 300,
-                  fit: BoxFit.contain,
-                ),
-                SizedBox(height: 60),
-                Text(
-                  'anonymous uid',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    //color: Colors.white,
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    "구글 로그인이 필요합니다.",
                   ),
-                ),
-                SizedBox(height: 20),
-                Divider(height: 1.0, color: Colors.white),
-                SizedBox(height: 20),
-                Text(
-                  'anonymous',
-                  style: TextStyle(
-                    fontSize: 16,
-                    //color: Colors.white,
-                  ),
-                ),
-              ],
+                  FlatButton(
+                    child: Text(
+                      "Google Login",
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                    color: Colors.blue,
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserPage(uid: user.data.uid)));
+                    },
+                  )
+                ],
+              ),
             );
           }
         }

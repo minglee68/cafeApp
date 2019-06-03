@@ -104,25 +104,7 @@ class _DetailPageState extends State<DetailPage> {
                     return Scaffold(
                       key: _scaffoldKey,
                       appBar: AppBar(
-                        title: Text("Detail"),
-                        actions: <Widget>[
-                          IconButton(
-                            icon: Icon(
-                              Icons.create,
-                              semanticLabel: 'create',
-                            ),
-                            onPressed: () {
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.delete,
-                              semanticLabel: 'delete',
-                            ),
-                            onPressed: () {
-                            },
-                          ),
-                        ],
+                        title: Text(record.name),
                       ),
                       body: Center(
                         child: ListView(

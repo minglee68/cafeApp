@@ -38,7 +38,12 @@ class HomePage extends StatelessWidget {
           '/map': (context) => MapPage(),
           '/search': (context) => SearchPage(),
           //'/home' : (context) => MyHomePage(),
-        }
+        },
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          primaryColor: Colors.brown,
+          accentColor: Colors.black,
+        ),
     );
   }
 
@@ -65,13 +70,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _cIndex = 0;
 
-  void _incrementTab(index) {
+  void _incrementTab(BuildContext context, index) {
     setState(() {
       _cIndex = index;
       print(_cIndex);
       
       if (_cIndex == 0) {
-        //Navigator.pushNamed(context, '/');
+        Navigator.pushNamed(context, '/');
       } else if (_cIndex == 1) {
         Navigator.pushNamed(context, '/map');
       } else if (_cIndex == 2) {
@@ -231,7 +236,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         onTap: (index) {
-          _incrementTab(index);
+          _incrementTab(context, index);
         },
         /*
         onTap: (int currentIndex){
