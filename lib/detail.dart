@@ -87,6 +87,7 @@ class _DetailPageState extends State<DetailPage> {
     return StreamBuilder(
         stream: authService.user,
         builder: (context, snapshot) {
+          print(snapshot.data.uid);
           return StreamBuilder<DocumentSnapshot>(
               stream: Firestore.instance.collection('cafe').document(widget.data.documentID).snapshots(),
               builder: (context, product) {

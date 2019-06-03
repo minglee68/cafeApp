@@ -17,7 +17,7 @@ import 'auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'add.dart';
 import 'main.dart';
-import 'detail.dart';
+import 'profiletodetail.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -40,8 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
             title: FlatButton(
               child: Text(record.name, style: TextStyle(color: Colors.white)),
               onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(data: data)));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(data: data, user: user)));
               },
             ),
             trailing: FlatButton(
@@ -276,42 +275,6 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           }
         }
-      ),
-      bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
-          // sets the background color of the `BottomNavigationBar`
-            canvasColor: Colors.brown,
-            // sets the active color of the `BottomNavigationBar` if `Brightness` is light
-            primaryColor: Colors.brown,
-            textTheme: Theme
-                .of(context)
-                .textTheme
-                .copyWith(caption: new TextStyle(color: Colors.white))),
-        child: BottomNavigationBar(
-          currentIndex: _cIndex,
-          type: BottomNavigationBarType.fixed,// this will be set when a new tab is tapped
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home, color: Color.fromARGB(255, 0, 0, 0)),
-              title: Text('Home'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.map, color: Color.fromARGB(255, 0, 0, 0)),
-              title: Text('Map'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0)),
-              title: Text('Search'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person, color: Color.fromARGB(255, 0, 0, 0)),
-              title: Text('Profile'),
-            ),
-          ],
-          onTap: (index) {
-            _incrementTab(index);
-          },
-        ),
       ),
     );
   }

@@ -218,43 +218,16 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cafe App'),
-      ),
-
-      bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
-          // sets the background color of the `BottomNavigationBar`
-            canvasColor: Colors.brown,
-            // sets the active color of the `BottomNavigationBar` if `Brightness` is light
-            primaryColor: Colors.brown,
-            textTheme: Theme
-                .of(context)
-                .textTheme
-                .copyWith(caption: new TextStyle(color: Colors.white))),
-        child: BottomNavigationBar(
-          currentIndex: _cIndex,
-          type: BottomNavigationBarType.fixed,// this will be set when a new tab is tapped
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home, color: Color.fromARGB(255, 0, 0, 0)),
-              title: Text('Home'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.map, color: Color.fromARGB(255, 0, 0, 0)),
-              title: Text('Map'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0)),
-              title: Text('Search'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person, color: Color.fromARGB(255, 0, 0, 0)),
-              title: Text('Profile'),
-            ),
-          ],
-          onTap: (index) {
-            _incrementTab(context, index);
-          },
-        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.person, color: Color.fromARGB(255, 0, 0, 0)),
+            onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));},
+          ),
+          IconButton(
+            icon: Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0)),
+            onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage()));},
+          )
+        ],
       ),
 
       body: StreamBuilder<QuerySnapshot>(
