@@ -29,6 +29,7 @@ class _SearchPageState extends State<SearchPage> {
   String _name = "";
   bool _cafeName = false;
   bool _beanName = false;
+  bool _sflag = true;
   var _checkFlag = [false, false, false, false, false, false, false];
 
   String getBeanName(int num) {
@@ -58,8 +59,8 @@ class _SearchPageState extends State<SearchPage> {
     _checkFlag.forEach((element) {
       if (element) {
         temp.add(getBeanName(count));
-        count = count + 1;
       }
+      count = count + 1;
     });
     return temp;
   }
@@ -92,6 +93,7 @@ class _SearchPageState extends State<SearchPage> {
                 _name = _nameController.text;
                 _cafeName = true;
                 _beanName = false;
+                _sflag = true;
                 Navigator.of(context).pop();
               },
             ),
@@ -108,86 +110,22 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _showSearchBean(BuildContext context) async {
+    void onSubmit(List<dynamic> newlist) {
+      setState(() {
+        int count = 0;
+        while (count < 7) {
+          _checkFlag[count] = newlist[count];
+          count = count + 1;
+        }
+        _cafeName = false;
+        _beanName = true;
+        _sflag = true;
+      });
+    }
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('원두 이름으로 검색하세요'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                CheckboxListTile(
-                  title: const Text('인도네시아 만델링'),
-                  value: _checkFlag[0],
-                  onChanged: (bool value) {
-                    setState(() { _checkFlag[0] = value; });
-                  },
-                ),
-                CheckboxListTile(
-                  title: const Text('콜롬비아 슈프리모'),
-                  value: _checkFlag[1],
-                  onChanged: (bool value) {
-                    setState(() { _checkFlag[1] = value; });
-                  },
-                ),
-                CheckboxListTile(
-                  title: const Text('브라질 산토스'),
-                  value: _checkFlag[2],
-                  onChanged: (bool value) {
-                    setState(() { _checkFlag[2] = value; });
-                  },
-                ),
-                CheckboxListTile(
-                  title: const Text('과테말라 안티구아'),
-                  value: _checkFlag[3],
-                  onChanged: (bool value) {
-                    setState(() { _checkFlag[3] = value; });
-                  },
-                ),
-                CheckboxListTile(
-                  title: const Text('에디오피아 예가체프'),
-                  value: _checkFlag[4],
-                  onChanged: (bool value) {
-                    setState(() { _checkFlag[4] = value; });
-                  },
-                ),
-                CheckboxListTile(
-                  title: const Text('케냐 AA'),
-                  value: _checkFlag[5],
-                  onChanged: (bool value) {
-                    setState(() { _checkFlag[5] = value; });
-                  },
-                ),
-                CheckboxListTile(
-                  title: const Text('에디오피아 시다모'),
-                  value: _checkFlag[6],
-                  onChanged: (bool value) {
-                    setState(() { _checkFlag[6] = value; });
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('검색'),
-              onPressed: () {
-                _cafeName = false;
-                _beanName = true;
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text('돌아가기'),
-              onPressed: () {
-                _checkFlag = [false, false, false, false, false, false, false];
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
+      builder: (BuildContext context) => SearchForm(onSubmit: onSubmit),
     );
   }
 
@@ -202,20 +140,20 @@ class _SearchPageState extends State<SearchPage> {
 
   List<Widget> _buildGridCards(BuildContext context, List<DocumentSnapshot> snapshot) {
     List<Widget> temp = [];
+    List<dynamic> check = [];
     snapshot.map((data) {
       final record = Record.fromSnapshot(data);
+
       if (_cafeName) {
         if (record.name.contains(_name)) {
           temp.add(_buildListItem(context, data));
         }
-      } else  if (_beanName) {
+      } else if (_beanName) {
         List<dynamic> beans = getBeans();
         beans.forEach((element) {
-          bool flag = false;
-          if (record.beans.contains(element)) {
-            flag = true;
-          }
-          if (flag) {
+          if (record.beans.contains(element) && !check.contains(record.name)) {
+            print(record.name);
+            check.add(record.name);
             temp.add(_buildListItem(context, data));
           }
         });
@@ -223,6 +161,8 @@ class _SearchPageState extends State<SearchPage> {
         temp.add(_buildListItem(context, data));
       }
     }).toList();
+
+    _sflag = false;
 
     return temp;
   }
@@ -337,6 +277,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('build');
     return Scaffold(
       appBar: AppBar(
         title: Text('Search'),
@@ -375,6 +316,89 @@ class _SearchPageState extends State<SearchPage> {
           );
         }
       ),
+    );
+  }
+}
+
+class SearchForm extends StatefulWidget {
+  SearchForm({this.onSubmit});
+  final onSubmit;
+
+  @override
+  SearchFormState createState() => SearchFormState();
+}
+
+class SearchFormState extends State<SearchForm> {
+  var _checkFlag = [false, false, false, false, false, false, false];
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleDialog(
+      title: Text('카페 이름으로 검색하세요'),
+      children: <Widget>[
+        SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              CheckboxListTile(
+                title: const Text('인도네시아 만델링'),
+                value: _checkFlag[0],
+                onChanged: (bool value) {
+                  setState(() { _checkFlag[0] = value; });
+                },
+              ),
+              CheckboxListTile(
+                title: const Text('콜롬비아 슈프리모'),
+                value: _checkFlag[1],
+                onChanged: (bool value) {
+                  setState(() { _checkFlag[1] = value; });
+                },
+              ),
+              CheckboxListTile(
+                title: const Text('브라질 산토스'),
+                value: _checkFlag[2],
+                onChanged: (bool value) {
+                  setState(() { _checkFlag[2] = value; });
+                },
+              ),
+              CheckboxListTile(
+                title: const Text('과테말라 안티구아'),
+                value: _checkFlag[3],
+                onChanged: (bool value) {
+                  setState(() { _checkFlag[3] = value; });
+                },
+              ),
+              CheckboxListTile(
+                title: const Text('에디오피아 예가체프'),
+                value: _checkFlag[4],
+                onChanged: (bool value) {
+                  setState(() { _checkFlag[4] = value; });
+                },
+              ),
+              CheckboxListTile(
+                title: const Text('케냐 AA'),
+                value: _checkFlag[5],
+                onChanged: (bool value) {
+                  setState(() { _checkFlag[5] = value; });
+                },
+              ),
+              CheckboxListTile(
+                title: const Text('에디오피아 시다모'),
+                value: _checkFlag[6],
+                onChanged: (bool value) {
+                  setState(() { _checkFlag[6] = value; });
+                },
+              ),
+              FlatButton(
+                child: Text('검색'),
+                onPressed: () {
+                  widget.onSubmit(_checkFlag);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

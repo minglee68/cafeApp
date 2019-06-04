@@ -187,22 +187,6 @@ class _AddUserPageState extends State<AddUserPage> {
                       ],
                     ),
                     SizedBox(height: 20.0),
-                    /*
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              filled: true,
-                              labelText: 'Gender',
-                            ),
-                            controller: _genderController,
-                          ),
-                        ),
-                      ],
-                    ),
-                    */
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[

@@ -120,6 +120,54 @@ class _ProfilePageState extends State<ProfilePage> {
     return user;
   }
 
+  Future<void> _showEditUsername(BuildContext context, String uid, String name) async {
+    final _nameController = TextEditingController();
+    _nameController.text = name;
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Username 변경'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                TextField(
+                  controller: _nameController,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('변경'),
+              onPressed: () {
+                if (_nameController.text.isNotEmpty) {
+                  Firestore.instance.collection('user').document(uid).updateData({
+                    "nickname": _nameController.text,
+                  }).then((result) =>
+                  {
+                  Navigator.pop(context),
+                  _nameController.clear(),
+                  }).catchError((err) => print(err));
+                } else {
+                  print('error');
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('돌아가기'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -221,6 +269,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ),
                                           ),
                                           onPressed: () {
+                                            _showEditUsername(context, user.data.uid, record.nickname);
                                           },
                                           color: Colors.brown,
                                         ),
