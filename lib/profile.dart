@@ -214,7 +214,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ),
                                         FlatButton(
                                           child: Text(
-                                            'Edit User',
+                                            'Edit Username',
                                             style: TextStyle(
                                               fontSize: 20.0,
                                               color: Colors.white,
