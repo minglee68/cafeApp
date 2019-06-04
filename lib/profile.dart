@@ -124,7 +124,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
+        title: Text('My Page'),
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -196,18 +196,35 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                     SizedBox(height: 20),
-                                    FlatButton(
-                                      child: Text(
-                                        'Add Cafe',
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.white,
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text(
+                                            '카페 추가',
+                                            style: TextStyle(
+                                              fontSize: 20.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => AddCafePage(uid: user.data.uid)));
+                                          },
+                                          color: Colors.brown,
                                         ),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => AddCafePage(uid: user.data.uid)));
-                                      },
-                                      color: Colors.blue,
+                                        FlatButton(
+                                          child: Text(
+                                            'Edit User',
+                                            style: TextStyle(
+                                              fontSize: 20.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                          },
+                                          color: Colors.brown,
+                                        ),
+                                      ],
                                     ),
                                     SizedBox(height: 20),
                                     Divider(height: 1.0, color: Colors.white),
@@ -241,7 +258,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           color: Colors.blue,
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserPage(uid: user.data.uid)));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserPage(uid: user.data.uid, name: user.data.displayName)));
                           },
                         )
                       ],

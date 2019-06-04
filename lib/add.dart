@@ -22,8 +22,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class AddUserPage extends StatefulWidget {
-  AddUserPage({ Key key, this.uid,}) : super(key: key);
+  AddUserPage({ Key key, this.uid, this.name,}) : super(key: key);
   final uid;
+  final name;
   @override
   _AddUserPageState createState() => _AddUserPageState();
 }
@@ -31,11 +32,28 @@ class AddUserPage extends StatefulWidget {
 class _AddUserPageState extends State<AddUserPage> {
   File _image;
   final _nameController = TextEditingController();
-  final _genderController = TextEditingController();
-  final _nicknameController = TextEditingController();
+  final _usernameController = TextEditingController();
+
+  String _genderValue = "0";
+  bool flag = true;
 
   @override
   Widget build(BuildContext context) {
+
+    String getGender(String value) {
+      String result = "Female";
+      if (value == "0") {
+        result = "Male";
+      }
+
+      return result;
+    }
+
+    if (flag) {
+      _nameController.text = widget.name;
+      _usernameController.text = widget.name;
+      flag = false;
+    }
 
     Future getImage() async {
       var image = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -56,21 +74,19 @@ class _AddUserPageState extends State<AddUserPage> {
 
       setState(() {
         if (_nameController.text.isNotEmpty &&
-            _genderController.text.isNotEmpty &&
-            _nicknameController.text.isNotEmpty &&
+            _usernameController.text.isNotEmpty &&
             url != null) {
           Firestore.instance.collection('user').document(widget.uid).setData({
             "name": _nameController.text,
-            "gender": _genderController.text,
-            "nickname": _nicknameController.text,
+            "gender": getGender(_genderValue),
+            "nickname": _usernameController.text,
             "likedCafe": [],
             "image": url,
           }).then((result) =>
           {
           Navigator.pop(context),
           _nameController.clear(),
-          _genderController.clear(),
-          _nicknameController.clear(),
+          _usernameController.clear(),
           }).catchError((err) => print(err));
         } else {
           print('error');
@@ -163,7 +179,7 @@ class _AddUserPageState extends State<AddUserPage> {
                           child: TextField(
                             decoration: InputDecoration(
                               filled: true,
-                              labelText: 'User Name',
+                              labelText: 'Your Name',
                             ),
                             controller: _nameController,
                           ),
@@ -171,6 +187,7 @@ class _AddUserPageState extends State<AddUserPage> {
                       ],
                     ),
                     SizedBox(height: 20.0),
+                    /*
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
@@ -185,7 +202,7 @@ class _AddUserPageState extends State<AddUserPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20.0),
+                    */
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
@@ -193,13 +210,39 @@ class _AddUserPageState extends State<AddUserPage> {
                           child: TextField(
                             decoration: InputDecoration(
                               filled: true,
-                              labelText: 'Nickname',
+                              labelText: 'Username',
                             ),
-                            controller: _nicknameController,
+                            controller: _usernameController,
                           ),
                         ),
                       ],
                     ),
+                    SizedBox(height: 20.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text('Gender : '),
+                        DropdownButton<String>(
+                          items: [
+                            DropdownMenuItem<String>(
+                              value: "0",
+                              child: Text("남자"),
+                            ),
+                            DropdownMenuItem<String>(
+                              value: "1",
+                              child: Text("여자"),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _genderValue = value;
+                            });
+                          },
+                          value: _genderValue,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 40.0),
                   ],
                 ),
               ),
@@ -617,16 +660,6 @@ class _AddCafePageState extends State<AddCafePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  /*
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        filled: true,
-                        labelText: 'Open Time',
-                      ),
-                      controller: _openController,
-                    ),
-                  ),*/
                   Text('Open Time: '),
                   DropdownButton<String>(
                     items: timeDropdown(),
