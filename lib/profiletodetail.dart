@@ -18,6 +18,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth.dart';
 import 'main.dart';
 import 'edit.dart';
+import 'map.dart';
 import 'profile.dart';
 import 'beandetail.dart';
 
@@ -145,7 +146,7 @@ class _DetailPageState extends State<DetailPage> {
                       child: Row(
                         children: [
                           Expanded(
-                            flex: 4,
+                            //flex: 2,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -159,13 +160,40 @@ class _DetailPageState extends State<DetailPage> {
                                     ),
                                   ),
                                 ),
+                                Container(
+                                  padding: EdgeInsets.only(bottom: 8),
+                                  child: Text(
+                                    record.phone,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(bottom: 8),
+                                  child: Text(
+                                    record.location,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                          Expanded(
-                            flex: 1,
+                          Container(
+                            //flex: 1,
                             child: Row(
                               children: <Widget>[
+                                IconButton(
+                                    icon: Icon(Icons.map, color: Colors.brown),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => MapPage()),
+                                      );
+                                    }
+                                ),
                                 IconButton(
                                     icon: Icon(Icons.favorite, color: getColor(record.likedUsers.contains(widget.user))),
                                     onPressed: () {

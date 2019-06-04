@@ -165,6 +165,24 @@ class _DetailPageState extends State<DetailPage> {
                                             ),
                                           ),
                                         ),
+                                        Container(
+                                          padding: EdgeInsets.only(bottom: 8),
+                                          child: Text(
+                                            record.phone,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.only(bottom: 8),
+                                          child: Text(
+                                            record.location,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
