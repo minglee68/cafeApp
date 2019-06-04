@@ -305,14 +305,6 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ],
             ),
-            /*
-            child: GridView.count(
-              crossAxisCount: 1,
-              padding: EdgeInsets.all(16.0),
-              childAspectRatio: 7.5 / 9.0,
-              children: _buildGridCards(context, snapshot.data.documents),
-            ),
-            */
           );
         }
       ),

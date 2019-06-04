@@ -367,23 +367,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       //Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserPage(uid: user.data.uid)));
                     },
                   ),
-                  /*
-                  FlatButton(
-                    child: Text(
-                      "Google Login",
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                    color: Colors.brown,
-                    onPressed: () {
-                      authService.signOut();
-                      authService.googleSignIn();
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserPage(uid: user.data.uid)));
-                    },
-                  )
-                  */
                 ],
               ),
             );

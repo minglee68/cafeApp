@@ -55,14 +55,6 @@ class _LoginPageState extends State<LoginPage> {
                     text: "Sign in with Google",
                     onPressed: () => authService.googleSignIn(),
                   );
-                  /*
-                  return MaterialButton(
-                    onPressed: () => authService.googleSignIn(),
-                    color: Colors.white,
-                    textColor: Colors.black,
-                    child: Text('Login with Google'),
-                  );
-                  */
                 }
               }
             ),
