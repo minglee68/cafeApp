@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth.dart';
@@ -21,6 +24,12 @@ import 'edit.dart';
 import 'beandetail.dart';
 import 'map.dart';
 
+const kGoogleApiKey = "AIzaSyCWiFLiauFZv-cMSqXX_f4mRTn9rYd6ssw";
+GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
+LatLng center = LatLng(0,0);
+String cafeName = "";
+String cafeAddr = "";
+
 class DetailPage extends StatefulWidget {
   DetailPage({ Key key, this.data,}) : super(key: key);
   final data;
@@ -29,7 +38,6 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-
   bool _checkUserExist(BuildContext context, List<DocumentSnapshot> snapshot, String uid) {
     List user_list = snapshot.map((data) {return data.documentID;}).toList();
     bool flag = false;
@@ -54,10 +62,37 @@ class _DetailPageState extends State<DetailPage> {
     return user;
   }
 
+  void _searchPlace(){
+    Geolocator().placemarkFromAddress(cafeAddr)
+        .catchError((value) => null)
+        .then((result) {
+      if(result != null){
+        if(result.length == 0) {print('No Data');}
+        else{
+          _places.searchNearbyWithRadius(
+              Location(result[0].position.latitude, result[0].position.longitude), 100
+          ).then((value){
+            value.results.forEach((f) {
+              //print("f is,,");
+              //print(f.name);
+              if (cafeName == f.name) {
+                //print("this cafe's name is "+ thisName);
+                print("1. ok");
+                Geolocator().placemarkFromCoordinates(f.geometry.location.lat, f.geometry.location.lng)
+                    .then((result) {
+                  center = LatLng(f.geometry.location.lat, f.geometry.location.lng) ;
+
+                });
+              }
+            });
+          });
+        }
+      }});
+  }
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
     Color getColor(bool flag) {
       if (flag) {
         return Colors.red;
@@ -91,6 +126,9 @@ class _DetailPageState extends State<DetailPage> {
               builder: (context, product) {
                 if (!product.hasData) return LinearProgressIndicator();
                 var record = Record.fromSnapshot(product.data);
+                cafeName = record.name;
+                cafeAddr = record.location;
+                _searchPlace();
                 return StreamBuilder<QuerySnapshot>(
                   stream: Firestore.instance.collection('user').snapshots(),
                   builder: (context, userData) {
@@ -190,6 +228,8 @@ class _DetailPageState extends State<DetailPage> {
                                         IconButton(
                                             icon: Icon(Icons.map, color: Colors.brown),
                                             onPressed: () {
+                                              print(center.latitude);
+                                              print(center.longitude);
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(builder: (context) => MapPage()),
