@@ -23,6 +23,7 @@ class _MapPageState extends State<MapPage> {
       home: Scaffold(
         appBar: AppBar(
           title: Text('Maps'),
+          backgroundColor: Colors.brown,
         ),
         body: GoogleMap(
           onMapCreated: _onMapCreated,
