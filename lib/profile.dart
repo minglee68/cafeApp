@@ -18,6 +18,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'add.dart';
 import 'main.dart';
 import 'profiletodetail.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -26,7 +30,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  int _cIndex = 3;
 
   List<Widget> _buildList(BuildContext context, List<DocumentSnapshot> snapshot, List<dynamic> likedCafe, String user) {
 
@@ -38,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
       if (likedCafe.contains(data.documentID)) {
         temp.add(ListTile(
             title: FlatButton(
-              child: Text(record.name, style: TextStyle(color: Colors.white)),
+              child: Text(record.name, style: TextStyle(color: Colors.white, fontSize: 20)),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(data: data, user: user)));
               },
@@ -69,31 +72,12 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ));
         temp.add(SizedBox(height: 20));
-        temp.add(Divider(height: 1.0, color: Colors.black));
+        temp.add(Divider(height: 1.0, color: Colors.white));
         temp.add(SizedBox(height: 20));
       }
     }).toList();
 
     return temp;
-  }
-
-  void _incrementTab(index) {
-    setState(() {
-      _cIndex = index;
-      print(_cIndex);
-
-      if (_cIndex == 0) {
-        Navigator.pop(context);
-      } else if (_cIndex == 1) {
-        Navigator.pushNamed(context, '/map');
-      } else if (_cIndex == 2) {
-        //Navigator.pushNamed(context, '/home');
-      } else if (_cIndex == 3) {
-        //Navigator.pushNamed(context, '/profile');
-      }
-
-      _cIndex = 3;
-    });
   }
 
   bool _checkUserExist(BuildContext context, List<DocumentSnapshot> snapshot, String uid) {
@@ -168,6 +152,28 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Future getImage(String uid) async {
+    File _image;
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    _image = image;
+
+    String filename = basename(_image.path);
+    StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child(filename);
+    StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
+
+    var downurl = await (await uploadTask.onComplete).ref.getDownloadURL();
+    String url = downurl.toString();
+
+    Firestore.instance.collection('user').document(uid).updateData({
+      "image": url,
+    }).then((result) => {}).catchError((err) => print(err));
+
+    setState(() {
+      print('Image Path $_image');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -190,7 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
       body: StreamBuilder(
         stream: authService.user,
         builder: (context, user) {
-          if (user.hasData) {
+          if (user.hasData && !authService.guest) {
             return StreamBuilder<QuerySnapshot>(
               stream: Firestore.instance.collection('user').snapshots(),
               builder: (context, userData) {
@@ -216,7 +222,22 @@ class _ProfilePageState extends State<ProfilePage> {
                                       height: 300,
                                       fit: BoxFit.contain,
                                     ),
-                                    SizedBox(height: 60),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(top:0),
+                                        child: IconButton(
+                                          icon: Icon(
+                                            Icons.photo_camera,
+                                            size: 30.0,
+                                          ),
+                                          onPressed: (){
+                                            getImage(user.data.uid);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 20),
                                     Text(
                                       record.nickname,
                                       style: TextStyle(
@@ -233,8 +254,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         //color: Colors.white,
                                       ),
                                     ),
-                                    SizedBox(height: 20),
-                                    Divider(height: 1.0, color: Colors.white),
+                                    //SizedBox(height: 20),
+                                    //Divider(height: 1.0, color: Colors.white),
                                     SizedBox(height: 20),
                                     Text(
                                       user.data.email,
@@ -243,7 +264,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         //color: Colors.white,
                                       ),
                                     ),
-                                    SizedBox(height: 20),
+                                    SizedBox(height: 40),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: <Widget>[
@@ -331,9 +352,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         color: Colors.white,
                       ),
                     ),
-                    color: Colors.blue,
+                    color: Colors.brown,
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserPage(uid: user.data.uid)));
+                      authService.signOut();
+                      authService.googleSignIn();
+                      //Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserPage(uid: user.data.uid)));
                     },
                   )
                 ],

@@ -13,6 +13,7 @@ class AuthService {
   Observable<FirebaseUser> user; // firebase user
   Observable<Map<String, dynamic>> profile; // custom user data in Firestore
   PublishSubject loading = PublishSubject();
+  bool guest = false;
 
   // constructor
   AuthService() {
@@ -52,6 +53,7 @@ class AuthService {
     // Done
     loading.add(false);
     print("signed in " + user.displayName);
+    guest = false;
     return user;
   }
 

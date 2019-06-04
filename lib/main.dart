@@ -220,11 +220,11 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text('Cafe App'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.person, color: Color.fromARGB(255, 0, 0, 0)),
+            icon: Icon(Icons.person, color: Colors.white),
             onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));},
           ),
           IconButton(
-            icon: Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0)),
+            icon: Icon(Icons.search, color: Colors.white),
             onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage()));},
           )
         ],

@@ -140,7 +140,32 @@ class _BeanDetailPageState extends State<BeanDetailPage> {
                               padding: EdgeInsets.all(32.0),
                               child: SizedBox(
                                 height: 200,
-                                child: BarChart(_createData(record)),
+                                child: BarChart(
+                                  _createData(record),
+                                  domainAxis: OrdinalAxisSpec(
+                                    renderSpec: SmallTickRendererSpec(
+                                      labelStyle: TextStyleSpec(
+                                        fontSize: 18,
+                                        color: MaterialPalette.white,
+                                      ),
+                                      lineStyle: LineStyleSpec(
+                                        color: MaterialPalette.white,
+                                      ),
+                                    ),
+                                  ),
+                                  primaryMeasureAxis: NumericAxisSpec(
+                                    tickProviderSpec: BasicNumericTickProviderSpec(desiredTickCount: 6),
+                                    renderSpec: GridlineRendererSpec(
+                                      labelStyle: TextStyleSpec(
+                                        fontSize: 16,
+                                        color: MaterialPalette.white,
+                                      ),
+                                      lineStyle: LineStyleSpec(
+                                        color: MaterialPalette.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               )
                           ),
                           FlatButton(

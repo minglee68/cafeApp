@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth.dart';
 import 'main.dart';
@@ -57,8 +56,6 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final NumberFormat formatter = NumberFormat.simpleCurrency(
-        locale: Localizations.localeOf(context).toString());
     final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
     Color getColor(bool flag) {
@@ -202,16 +199,74 @@ class _DetailPageState extends State<DetailPage> {
                                         IconButton(
                                             icon: Icon(Icons.favorite, color: getColor(record.likedUsers.contains(snapshot.data.uid))),
                                             onPressed: () {
-                                              final snackBar1 = SnackBar(
-                                                content: Text('I LIKE IT!'),
-                                                action: SnackBarAction(
-                                                  label: 'Undo',
-                                                  onPressed: () {
+                                              if (!authService.guest) {
+                                                final snackBar1 = SnackBar(
+                                                  content: Text('I LIKE IT!'),
+                                                  action: SnackBarAction(
+                                                    label: 'Undo',
+                                                    onPressed: () {
+                                                      List<dynamic> temp = [];
+                                                      record.likedUsers.forEach((element) {
+                                                        if (element != snapshot.data.uid)
+                                                          temp.add(element);
+                                                      });
+
+                                                      Firestore.instance.collection('cafe').document(widget.data.documentID).updateData({
+                                                        "likedUsers": temp,
+                                                      }).then((result) => {}).catchError((err) => print(err));
+
+                                                      if (flag) {
+                                                        List<dynamic> userTemp = [];
+
+                                                        userRecord.likedCafe.forEach((element) {
+                                                          if (element != widget.data.documentID)
+                                                            userTemp.add(element);
+                                                        });
+
+                                                        Firestore.instance.collection('user').document(snapshot.data.uid).updateData({
+                                                          "likedCafe": userTemp,
+                                                        }).then((result) => {}).catchError((err) => print(err));
+                                                      }
+                                                    },
+                                                  ),
+                                                );
+                                                final snackBar2 = SnackBar(
+                                                  content: Text('You can only do it once!!'),
+                                                  action: SnackBarAction(
+                                                    label: 'Undo',
+                                                    onPressed: () {
+                                                      List<dynamic> temp = [];
+                                                      record.likedUsers.forEach((element) {
+                                                        if (element != snapshot.data.uid)
+                                                          temp.add(element);
+                                                      });
+
+                                                      Firestore.instance.collection('cafe').document(widget.data.documentID).updateData({
+                                                        "likedUsers": temp,
+                                                      }).then((result) => {}).catchError((err) => print(err));
+
+                                                      if (flag) {
+                                                        List<dynamic> userTemp = [];
+
+                                                        userRecord.likedCafe.forEach((element) {
+                                                          if (element != widget.data.documentID)
+                                                            userTemp.add(element);
+                                                        });
+
+                                                        Firestore.instance.collection('user').document(snapshot.data.uid).updateData({
+                                                          "likedCafe": userTemp,
+                                                        }).then((result) => {}).catchError((err) => print(err));
+                                                      }
+                                                    },
+                                                  ),
+                                                );
+                                                if (snapshot.hasData) {
+                                                  if (!record.likedUsers.contains(snapshot.data.uid)) {
                                                     List<dynamic> temp = [];
                                                     record.likedUsers.forEach((element) {
-                                                      if (element != snapshot.data.uid)
-                                                        temp.add(element);
+                                                      temp.add(element);
                                                     });
+                                                    temp.add(snapshot.data.uid);
 
                                                     Firestore.instance.collection('cafe').document(widget.data.documentID).updateData({
                                                       "likedUsers": temp,
@@ -224,73 +279,17 @@ class _DetailPageState extends State<DetailPage> {
                                                         if (element != widget.data.documentID)
                                                           userTemp.add(element);
                                                       });
+                                                      userTemp.add(widget.data.documentID);
 
                                                       Firestore.instance.collection('user').document(snapshot.data.uid).updateData({
                                                         "likedCafe": userTemp,
                                                       }).then((result) => {}).catchError((err) => print(err));
                                                     }
-                                                  },
-                                                ),
-                                              );
-                                              final snackBar2 = SnackBar(
-                                                content: Text('You can only do it once!!'),
-                                                action: SnackBarAction(
-                                                  label: 'Undo',
-                                                  onPressed: () {
-                                                    List<dynamic> temp = [];
-                                                    record.likedUsers.forEach((element) {
-                                                      if (element != snapshot.data.uid)
-                                                        temp.add(element);
-                                                    });
 
-                                                    Firestore.instance.collection('cafe').document(widget.data.documentID).updateData({
-                                                      "likedUsers": temp,
-                                                    }).then((result) => {}).catchError((err) => print(err));
-
-                                                    if (flag) {
-                                                      List<dynamic> userTemp = [];
-
-                                                      userRecord.likedCafe.forEach((element) {
-                                                        if (element != widget.data.documentID)
-                                                          userTemp.add(element);
-                                                      });
-
-                                                      Firestore.instance.collection('user').document(snapshot.data.uid).updateData({
-                                                        "likedCafe": userTemp,
-                                                      }).then((result) => {}).catchError((err) => print(err));
-                                                    }
-                                                  },
-                                                ),
-                                              );
-                                              if (snapshot.hasData) {
-                                                if (!record.likedUsers.contains(snapshot.data.uid)) {
-                                                  List<dynamic> temp = [];
-                                                  record.likedUsers.forEach((element) {
-                                                    temp.add(element);
-                                                  });
-                                                  temp.add(snapshot.data.uid);
-
-                                                  Firestore.instance.collection('cafe').document(widget.data.documentID).updateData({
-                                                    "likedUsers": temp,
-                                                  }).then((result) => {}).catchError((err) => print(err));
-
-                                                  if (flag) {
-                                                    List<dynamic> userTemp = [];
-
-                                                    userRecord.likedCafe.forEach((element) {
-                                                      if (element != widget.data.documentID)
-                                                        userTemp.add(element);
-                                                    });
-                                                    userTemp.add(widget.data.documentID);
-
-                                                    Firestore.instance.collection('user').document(snapshot.data.uid).updateData({
-                                                      "likedCafe": userTemp,
-                                                    }).then((result) => {}).catchError((err) => print(err));
+                                                    _scaffoldKey.currentState.showSnackBar(snackBar1);
+                                                  } else {
+                                                    _scaffoldKey.currentState.showSnackBar(snackBar2);
                                                   }
-
-                                                  _scaffoldKey.currentState.showSnackBar(snackBar1);
-                                                } else {
-                                                  _scaffoldKey.currentState.showSnackBar(snackBar2);
                                                 }
                                               }
                                             }
