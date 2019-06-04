@@ -17,6 +17,7 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth.dart';
 import 'main.dart';
+import 'edit.dart';
 import 'profile.dart';
 import 'beandetail.dart';
 
@@ -109,8 +110,7 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                     onPressed: () {
                       if (widget.user == record.owner) {
-                        print("you are owner");
-                        //Navigator.push(context, MaterialPageRoute(builder: (context) => EditPage(record: record)));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => EditCafePage(uid: widget.user, record: record, rid: widget.data.documentID)));
                       } else {
                         print("you are not owner");
                       }

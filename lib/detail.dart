@@ -18,6 +18,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth.dart';
 import 'main.dart';
 import 'profile.dart';
+import 'edit.dart';
 import 'beandetail.dart';
 
 class DetailPage extends StatefulWidget {
@@ -114,8 +115,7 @@ class _DetailPageState extends State<DetailPage> {
                             ),
                             onPressed: () {
                               if (snapshot.data.uid == record.owner) {
-                                print("you are owner");
-                                //Navigator.push(context, MaterialPageRoute(builder: (context) => EditPage(record: record)));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => EditCafePage(uid: snapshot.data.uid, record: record, rid: widget.data.documentID)));
                               } else {
                                 print("you are not owner");
                               }
