@@ -20,6 +20,7 @@ import 'main.dart';
 import 'profile.dart';
 import 'edit.dart';
 import 'beandetail.dart';
+import 'map.dart';
 
 class DetailPage extends StatefulWidget {
   DetailPage({ Key key, this.data,}) : super(key: key);
@@ -150,7 +151,7 @@ class _DetailPageState extends State<DetailPage> {
                               child: Row(
                                 children: [
                                   Expanded(
-                                    flex: 4,
+                                    //flex: 2,
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -167,10 +168,19 @@ class _DetailPageState extends State<DetailPage> {
                                       ],
                                     ),
                                   ),
-                                  Expanded(
-                                    flex: 1,
+                                  Container(
+                                    //flex: 1,
                                     child: Row(
                                       children: <Widget>[
+                                        IconButton(
+                                            icon: Icon(Icons.map, color: Colors.brown),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => MapPage()),
+                                              );
+                                            }
+                                        ),
                                         IconButton(
                                             icon: Icon(Icons.favorite, color: getColor(record.likedUsers.contains(snapshot.data.uid))),
                                             onPressed: () {
