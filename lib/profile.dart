@@ -22,6 +22,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -340,10 +341,33 @@ class _ProfilePageState extends State<ProfilePage> {
           } else {
             return Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "구글 로그인이 필요합니다.",
+                    "이 기능을 사용하기 위해선",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
+                  Text(
+                    "로그인을 해야합니다!",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 40),
+                  SignInButton(
+                    Buttons.Google,
+                    text: "Sign in with Google",
+                    onPressed: () {
+                      authService.signOut();
+                      authService.googleSignIn();
+                      //Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserPage(uid: user.data.uid)));
+                    },
+                  ),
+                  /*
                   FlatButton(
                     child: Text(
                       "Google Login",
@@ -359,6 +383,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       //Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserPage(uid: user.data.uid)));
                     },
                   )
+                  */
                 ],
               ),
             );

@@ -15,6 +15,7 @@
 import 'package:flutter/material.dart';
 import 'auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -43,24 +44,31 @@ class _LoginPageState extends State<LoginPage> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   Navigator.pop(context);
-                  return MaterialButton(
-                    onPressed: () => authService.signOut(),
-                    color: Colors.red,
-                    textColor: Colors.white,
-                    child: Text('Signout'),
+                  return SignInButton(
+                    Buttons.Google,
+                    text: "Sign in with Google",
+                    onPressed: () => authService.googleSignIn(),
                   );
                 } else {
+                  return SignInButton(
+                    Buttons.Google,
+                    text: "Sign in with Google",
+                    onPressed: () => authService.googleSignIn(),
+                  );
+                  /*
                   return MaterialButton(
                     onPressed: () => authService.googleSignIn(),
                     color: Colors.white,
                     textColor: Colors.black,
                     child: Text('Login with Google'),
                   );
+                  */
                 }
               }
             ),
-            RaisedButton(
-              child: Text('Guest'),
+            SignInButtonBuilder(
+              text: "로그인 없이 사용하기",
+              icon: Icons.clear,
               onPressed: () {
                 authService.guest = true;
                 FirebaseAuth.instance
@@ -70,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                   print(e);
                 });
               },
+              backgroundColor: Colors.brown,
             ),
           ],
         ),
