@@ -326,7 +326,7 @@ class SearchFormState extends State<SearchForm> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: Text('카페 이름으로 검색하세요'),
+      title: Text('원두로 검색하세요'),
       children: <Widget>[
         SingleChildScrollView(
           child: Column(
