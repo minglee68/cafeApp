@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:typicons_flutter/typicons_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -35,7 +36,12 @@ class _LoginPageState extends State<LoginPage> {
             Column(
               children: <Widget>[
                 SizedBox(height: 16.0),
-                Text('CAFE APP'),
+                Text(
+                  'ROASTERY CAFE APP',
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 120.0),
