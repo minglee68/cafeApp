@@ -134,7 +134,10 @@ class _BeanDetailPageState extends State<BeanDetailPage> {
                           SizedBox(height: 40),
                           Divider(height: 1.0, color: Colors.white),
                           SizedBox(height: 20),
-                          Text(record.description),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
+                            child : Text(record.description),
+                          ),
                           SizedBox(height: 20),
                           Padding(
                               padding: EdgeInsets.all(32.0),

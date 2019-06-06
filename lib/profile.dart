@@ -271,7 +271,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       children: <Widget>[
                                         FlatButton(
                                           child: Text(
-                                            '카페 추가',
+                                            '내가 운영중인 카페 등록',
                                             style: TextStyle(
                                               fontSize: 20.0,
                                               color: Colors.white,
