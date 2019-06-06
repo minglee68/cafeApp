@@ -139,44 +139,52 @@ class _BeanDetailPageState extends State<BeanDetailPage> {
                             child : Text(record.description),
                           ),
                           SizedBox(height: 20),
-                          Padding(
-                              padding: EdgeInsets.all(32.0),
-                              child: SizedBox(
-                                height: 200,
-                                child: BarChart(
-                                  _createData(record),
-                                  domainAxis: OrdinalAxisSpec(
-                                    renderSpec: SmallTickRendererSpec(
-                                      labelStyle: TextStyleSpec(
-                                        fontSize: 18,
-                                        color: MaterialPalette.white,
+                          Stack(
+                            children: <Widget>[
+                              Padding(
+                                  padding: EdgeInsets.all(32.0),
+                                  child: SizedBox(
+                                    height: 200,
+                                    child: BarChart(
+                                      _createData(record),
+                                      domainAxis: OrdinalAxisSpec(
+                                        renderSpec: SmallTickRendererSpec(
+                                          labelStyle: TextStyleSpec(
+                                            fontSize: 18,
+                                            color: MaterialPalette.white,
+                                          ),
+                                          lineStyle: LineStyleSpec(
+                                            color: MaterialPalette.white,
+                                          ),
+                                        ),
                                       ),
-                                      lineStyle: LineStyleSpec(
-                                        color: MaterialPalette.white,
+                                      primaryMeasureAxis: NumericAxisSpec(
+                                        tickProviderSpec: BasicNumericTickProviderSpec(desiredTickCount: 6),
+                                        renderSpec: GridlineRendererSpec(
+                                          labelStyle: TextStyleSpec(
+                                            fontSize: 16,
+                                            color: MaterialPalette.white,
+                                          ),
+                                          lineStyle: LineStyleSpec(
+                                            color: MaterialPalette.white,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  primaryMeasureAxis: NumericAxisSpec(
-                                    tickProviderSpec: BasicNumericTickProviderSpec(desiredTickCount: 6),
-                                    renderSpec: GridlineRendererSpec(
-                                      labelStyle: TextStyleSpec(
-                                        fontSize: 16,
-                                        color: MaterialPalette.white,
-                                      ),
-                                      lineStyle: LineStyleSpec(
-                                        color: MaterialPalette.white,
-                                      ),
-                                    ),
-                                  ),
+                                  )
+                              ),
+                              Container(
+                                alignment: Alignment.bottomRight,
+                                child: IconButton(
+                                  icon: Icon(Icons.help, color: Colors.white),
+                                  onPressed: () {
+                                    _showResult(context);
+                                  },
                                 ),
-                              )
+                              ),
+
+                            ],
                           ),
-                          FlatButton(
-                            child: Text("원두의 맛은 어떻게 보나요?"),
-                            onPressed: () {
-                              _showResult(context);
-                            },
-                          )
                         ],
                       ),
                     ),
